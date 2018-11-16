@@ -48,12 +48,19 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
 app.get('/secret', function (req, res) {
-	console.log('req.session.inSession: ' + req.session.inSession)
 	if (req.session.inSession) {
-		res.render('secret')
+		let sessionData = { ...req.session
+		}
+		res.render('secret', {
+			sessionData
+		})
 	} else {
 		res.render('404')
 	}
+})
+
+app.get('/login', function (req, res) {
+	res.render('login')
 })
 
 app.post('/login', function (req, res) {
@@ -62,44 +69,38 @@ app.post('/login', function (req, res) {
 	}).then(found => {
 		const matches = bcrypt.compareSync(req.body.password, found.password)
 
-		console.log("matches:" + matches)
-
 		if (matches) {
 			req.session.inSession = true
-			console.log('req.session.inSession: ' + req.session.inSession)
+			req.session.user = req.body.user
 
-			res.status(200).json({
-				userFound: true
-			})
+			res.redirect('secret')
 		} else {
 			req.session.inSession = false
-			console.log('req.session.inSession: ' + req.session.inSession)
-
-			res.status(200).json({
-				userFound: false
-			})
+			res.redirect('login')
 		}
 	})
 })
 
+app.get('/loggedOut', function (req, res) {
+	res.render('loggedOut')
+})
+
 app.get('/logout', function (req, res) {
 	req.session.destroy(() => {
-		res.json({
-			inSession: false
-		})
+		req.session = null;
+		res.redirect('loggedOut')
 	})
 })
 
-app.post('/createSession', function (req, res) {
+app.post('/createUser', function (req, res) {
 	const saltRounds = 5;
 
-	genericUser.user = "dani"
-	genericUser.password = "123"
+	genericUser.user = req.body.user
 
 	const salt = bcrypt.genSaltSync(saltRounds);
-	const hash1 = bcrypt.hashSync(genericUser.password, salt);
+	const hash = bcrypt.hashSync(req.body.password, salt);
 
-	genericUser.password = hash1
+	genericUser.password = hashedPassword
 
 	genericUser.save().then(x => {
 		req.session.inSession = true
