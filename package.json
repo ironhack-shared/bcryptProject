@@ -1,0 +1,28 @@
+{
+  "name": "bcrypt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ironhack-shared/bcrypt.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ironhack-shared/bcrypt/issues"
+  },
+  "homepage": "https://github.com/ironhack-shared/bcrypt#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "connect-mongo": "^2.0.1",
+    "express": "^4.16.4",
+    "express-session": "^1.15.6",
+    "mongoose": "^5.3.12",
+    "path": "^0.12.7"
+  }
+}
